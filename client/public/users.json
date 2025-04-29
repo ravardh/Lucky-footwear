@@ -1,0 +1,62 @@
+[
+    {
+        "name": "Admin One",
+        "email": "admin@example.com",
+        "password": "admin123",
+        "phone": "1234567890",
+        "gender": "Male",
+        "address": "123 Admin St",
+        "role": "admin",
+        "status": "active"
+    },
+    {
+        "name": "User One",
+        "email": "user1@example.com",
+        "password": "user123",
+        "phone": "1111111111",
+        "gender": "Female",
+        "address": "101 User Rd",
+        "role": "user",
+        "status": "active"
+    },
+    {
+        "name": "User Two",
+        "email": "user2@example.com",
+        "password": "user123",
+        "phone": "2222222222",
+        "gender": "Male",
+        "address": "102 User Rd",
+        "role": "user",
+        "status": "active"
+    },
+    {
+        "name": "User Three",
+        "email": "user3@example.com",
+        "password": "user123",
+        "phone": "3333333333",
+        "gender": "Female",
+        "address": "103 User Rd",
+        "role": "user",
+        "status": "inactive"
+    },
+    {
+        "name": "User Four",
+        "email": "user4@example.com",
+        "password": "user123",
+        "phone": "4444444444",
+        "gender": "Male",
+        "address": "104 User Rd",
+        "role": "user",
+        "status": "active"
+    },
+    {
+        "name": "User Five",
+        "email": "user5@example.com",
+        "password": "user123",
+        "phone": "5555555555",
+        "gender": "Other",
+        "address": "105 User Rd",
+        "role": "user",
+        "status": "active"
+    }
+]

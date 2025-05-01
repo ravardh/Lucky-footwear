@@ -1,6 +1,6 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
-import generateToken from "../middleware/authMiddleware.js";
+import generateToken from "../config/jwtToken.js";
 
 export const userRegister = async (req, res, next) => {
   try {
@@ -88,6 +88,21 @@ export const userLogin = async (req, res, next) => {
         profilePic:user.profilePic,
       }
      
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+
+
+export const userLogout = async (req, res, next) => {
+  try {
+    res.clearCookie("jwt");
+    res.status(200).json({
+      success: true,
+      message: "User logged out successfully",
     });
   } catch (error) {
     console.log(error);

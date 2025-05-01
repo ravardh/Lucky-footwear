@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "../config/api";
+
+import { useAuth } from "../context/authContext";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -8,16 +10,27 @@ const Login = () => {
     password: "",
   });
 
+  const navigate = useNavigate();
+  const { user, setUser, isLogin, setIsLogin, isAdmin, setIsAdmin } = useAuth();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post("/api/auth/login", formData);
       console.log(res.data);
+      setUser(res.data.user);
+      sessionStorage.setItem("user", JSON.stringify(res.data.user));
+      setIsLogin(true);
+      if (res.data.user.role === "Admin") {
+        setIsAdmin(true);
+        navigate("/adminDashboard");
+      }
       setFormData({
         email: "",
         password: "",
       });
       alert(res.data.message);
+      navigate("/");
     } catch (error) {
       console.error(error);
     }

@@ -1,20 +1,23 @@
 import jwt from "jsonwebtoken";
+import User from "../models/userModel";
 
-const generateToken = (userId, res) => {
-  try {
-    const token = jwt.sign({ key: userId }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
+export const userProtect = async (req, res, next) => {
+  const token = req.cookies.jwt;
 
-    res.cookie("jwt", token, {
-      maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: true,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
-    });
-  } catch (error) {
-    console.log(error);
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.key);
+      req.user = user;
+      next();
+    } catch (error) {
+      const err = new Error("Not Authorized, Token Failed");
+      err.statusCode = 401;
+      next(err);
+    }
+  } else {
+    const err = new Error("Not Authorized, No Token");
+    err.statusCode = 401;
+    next(err);
   }
 };
-
-export default generateToken;

@@ -11,6 +11,8 @@ import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/register";
 import Login from './pages/Login';
+import Update from "./pages/update";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const App = () => {
   return (
@@ -27,6 +29,9 @@ const App = () => {
             <Route path="/account" element={<Account />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/update" element={<Update />} />
+            <Route path="/adminDashboard" element={<AdminDashboard />} />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
       </main>

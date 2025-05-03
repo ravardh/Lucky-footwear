@@ -24,13 +24,14 @@ const Login = () => {
       if (res.data.user.role === "Admin") {
         setIsAdmin(true);
         navigate("/adminDashboard");
+      } else {
+        alert(res.data.message);
+        navigate("/");
       }
       setFormData({
         email: "",
         password: "",
       });
-      alert(res.data.message);
-      navigate("/");
     } catch (error) {
       console.error(error);
     }

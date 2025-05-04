@@ -1,5 +1,6 @@
 import express from "express";
 import authRoutes from "./src/routes/authRoutes.js";
+import adminRoutes from "./src/routes/adminRoutes.js";
 import connectDB from "./src/config/db.js";
 import cors from "cors";
 import morgan from "morgan";
@@ -20,6 +21,7 @@ app.use(morgan("dev"));
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Home Route
 app.get("/", (req, res) => {

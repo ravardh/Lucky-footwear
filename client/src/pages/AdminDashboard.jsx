@@ -5,6 +5,7 @@ import { FaUsers, FaBoxes, FaShoppingBag, FaExchangeAlt, FaMoneyBillWave } from 
 import { RxExit } from 'react-icons/rx';
 import axios from '../config/api';
 import { useAuth } from '../context/authContext';
+import ProductManagement from '../components/admin/ProductManagement';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -35,13 +36,13 @@ const AdminDashboard = () => {
   return (
     <div className="flex h-screen bg-surface-100">
       {/* Sidebar */}
-      <div className="w-64 bg-surface-50 shadow-lg">
+      <div className="w-50 bg-surface-50 shadow-lg">
         <div className="p-4">
           <h1 className="text-2xl font-bold text-primary">Admin Panel</h1>
         </div>
         
         <nav className="mt-2">
-          <div className="px-4 space-y-2">
+          <div className="px-4 space-y-1 text-sm">
             {menuItems.map((item) => (
               <button
                 key={item.id}
@@ -59,10 +60,10 @@ const AdminDashboard = () => {
           </div>
         </nav>
 
-        <div className="absolute bottom-0 w-64 p-4 border-t border-surface-200">
+        <div className="absolute bottom-0 w-50 p-4 border-t border-surface-200">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-error hover:bg-error hover:text-error-content transition-colors"
+            className=" flex items-center gap-3 px-4 py-3 rounded-lg text-error hover:bg-error hover:text-error-content transition-colors"
           >
             <RxExit />
             <span>Logout</span>
@@ -87,7 +88,7 @@ const AdminDashboard = () => {
           )}
           {activeTab === 'products' && (
             <div>
-              <h2 className="text-2xl font-bold mb-4">Product Management</h2>
+             <ProductManagement/>
               {/* Add products content */}
             </div>
           )}

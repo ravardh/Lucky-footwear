@@ -1,11 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
+import { FiPlus, FiTrash2 } from "react-icons/fi";
 import axios from "../../config/api";
 
-import { FiPlus } from "react-icons/fi";
-import { FiTrash2 } from "react-icons/fi";
-
-const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
+const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
   const [formData, setFormData] = useState({
     name: "",
     mrp: "",
@@ -15,15 +13,31 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
     subCategory: "",
     rating: 0,
     color: "",
-    size: "",
     brand: "",
-    stock: "",
   });
 
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [stockList, setStockList] = useState([{ size: "", quantity: "" }]);
+  const [existingImages, setExistingImages] = useState([]);
 
+  useEffect(() => {
+    if (product) {
+      setFormData({
+        name: product.name,
+        mrp: product.mrp,
+        discount: product.discount,
+        description: product.description,
+        category: product.category,
+        subCategory: product.subCategory,
+        rating: product.rating,
+        color: product.color,
+        brand: product.brand,
+      });
+      setStockList(product.size);
+      setExistingImages(product.image || []);
+    }
+  }, [product]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -42,8 +56,6 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
     setImages(files);
   };
 
-  
-
   const handleStockChange = (index, field, value) => {
     const newStockList = [...stockList];
     newStockList[index][field] = value;
@@ -60,7 +72,6 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
     setStockList(newStockList);
   };
 
-  // Update handleSubmit to include stockList
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -68,45 +79,44 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
     try {
       const formDataToSend = new FormData();
 
-      // Append all form fields except size and stock
       Object.keys(formData).forEach((key) => {
-        if (key !== "size" && key !== "stock") {
-          formDataToSend.append(key, formData[key]);
-        }
+        formDataToSend.append(key, formData[key]);
       });
 
-      // Append stock list
       formDataToSend.append("size", JSON.stringify(stockList));
 
-      // Append images
-      images.forEach((image) => {
-        formDataToSend.append("images", image);
-      });
+      if (images.length > 0) {
+        images.forEach((image) => {
+          formDataToSend.append("images", image);
+        });
+      } else {
+        formDataToSend.append("image", JSON.stringify(existingImages));
+      }
 
-      const response = await axios.post(
-        "/api/admin/addProduct",
+      const response = await axios.put(
+        `/api/admin/updateProduct/${product._id}`,
         formDataToSend
       );
-      onProductAdded(response.data.product);
+
+      onProductUpdated(response.data.product);
       onClose();
-      alert("Product added successfully!");
+      alert("Product updated successfully!");
     } catch (error) {
-      console.error("Error adding product:", error);
-      alert("Failed to add product");
+      console.error("Error updating product:", error);
+      alert("Failed to update product");
     } finally {
       setLoading(false);
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !product) return null;
 
-  // Replace the Stock-List div with:
   return (
-    <div className=" inset-0 bg-secondary flex items-center justify-center z-5 mt-15 fixed">
+    <div className="fixed inset-0 bg-secondary flex items-center justify-center z-5 mt-15">
       <div className="bg-secondary rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-secondary-content">
-            Add New Product
+            Edit Product
           </h2>
           <button
             onClick={onClose}
@@ -130,6 +140,7 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
               required
             />
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-secondary-content mb-1">
@@ -280,9 +291,26 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
             ></textarea>
           </div>
 
+          {/* Current Images Section */}
           <div>
             <label className="block text-sm font-medium text-secondary-content mb-1">
-              Images (Max 5)
+              Current Images
+            </label>
+            <div className="grid grid-cols-5 gap-2 mb-4">
+              {existingImages.map((img, index) => (
+                <img
+                  key={index}
+                  src={img}
+                  alt={`Product ${index + 1}`}
+                  className="w-full h-20 object-fill rounded"
+                />
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-secondary-content mb-1">
+              Upload New Images (Optional)
             </label>
             <input
               type="file"
@@ -290,7 +318,6 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
               multiple
               onChange={handleImageChange}
               className="w-full border border-secondary-content rounded-lg p-2 text-secondary-content"
-              required
             />
           </div>
 
@@ -305,9 +332,9 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-success/80 text-primary-content rounded-lg hover:bg-success disabled:opacity-50"
+              className="px-4 py-2 bg-warning text-warning-content rounded-lg hover:bg-warning-focus disabled:opacity-50"
             >
-              {loading ? "Adding..." : "Add Product"}
+              {loading ? "Updating..." : "Update Product"}
             </button>
           </div>
         </form>
@@ -316,6 +343,4 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
   );
 };
 
-export default AddProductModal;
-
-
+export default EditProductModal;

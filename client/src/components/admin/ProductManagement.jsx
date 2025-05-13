@@ -3,6 +3,7 @@ import axios from "../../config/api";
 import { FiEdit2, FiEye, FiTrash2, FiPlus, FiSearch } from "react-icons/fi";
 import AddProductModal from "../Modals/AddProductModal";
 import ViewProductModal from "../Modals/ViewProductModal";
+import EditProductModal from "../Modals/EditProductModal";
 
 const ProductManagement = () => {
   const [products, setProducts] = useState([]);
@@ -10,11 +11,23 @@ const ProductManagement = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Add handleView function
   const handleView = (product) => {
     setSelectedProduct(product);
     setIsViewModalOpen(true);
+  };
+
+  const handleEdit = (product) => {
+    setSelectedProduct(product);
+    setIsEditModalOpen(true);
+  };
+
+  const handleProductUpdated = (updatedProduct) => {
+    setProducts(
+      products.map((p) => (p._id === updatedProduct._id ? updatedProduct : p))
+    );
   };
 
   const fetchProducts = async () => {
@@ -116,7 +129,10 @@ const ProductManagement = () => {
                       >
                         <FiEye size={18} />
                       </button>
-                      <button className="p-1 text-warning hover:bg-warning hover:text-warning-content rounded">
+                      <button
+                        className="p-1 text-warning hover:bg-warning hover:text-warning-content rounded"
+                        onClick={() => handleEdit(product)}
+                      >
                         <FiEdit2 size={18} />
                       </button>
                       <button className="p-1 text-error hover:bg-error hover:text-error-content rounded">
@@ -139,6 +155,12 @@ const ProductManagement = () => {
         isOpen={isViewModalOpen}
         onClose={() => setIsViewModalOpen(false)}
         product={selectedProduct}
+      />
+      <EditProductModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        product={selectedProduct}
+        onProductUpdated={handleProductUpdated}
       />
     </div>
   );

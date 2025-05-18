@@ -25,7 +25,7 @@ router.get("/getProductById/:id", adminProtect, getProductById);
 router.put(
   "/updateProduct/:id",
   adminProtect,
-  upload.array("Productimages", 5),
+  upload.array("images", 5),
   updateProduct
 );
 router.delete("/deleteProduct/:id", adminProtect, deleteProduct);

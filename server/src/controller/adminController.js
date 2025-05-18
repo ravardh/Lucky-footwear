@@ -48,6 +48,7 @@ export const addProduct = async (req, res, next) => {
       size: Stock,
       brand,
       image: uploadedImageUrls,
+      status: "active",
     });
 
     res.status(201).json({
@@ -108,8 +109,9 @@ export const updateProduct = async (req, res, next) => {
     if (req.files.length > 0) {
       console.log(existingProduct.image);
       existingProduct.image.map(async (img) => {
-        const imgId =  img.split('/upload/')[1].split('/');
-        const public_id = imgId[1]+"/"+imgId[2]+"/"+imgId[3].split('.')[0];
+        const imgId = img.split("/upload/")[1].split("/");
+        const public_id =
+          imgId[1] + "/" + imgId[2] + "/" + imgId[3].split(".")[0];
         try {
           const res = await cloudinary.uploader.destroy(public_id);
           console.log(res);
@@ -154,6 +156,7 @@ export const updateProduct = async (req, res, next) => {
         size: Stock,
         brand,
         image: uploadedImageUrls,
+        status: "active",
       },
       { new: true }
     );
